@@ -6,5 +6,7 @@ import App from '../exercise/01.extra-1'
 
 test('typing a name shows a greeting', async () => {
   render(<App />)
-  expect(screen.getByText(/hello.*Frank/i)).toBeInTheDocument()
+  const regexMatch = /Frank/i;
+  expect(screen.getByText(regexMatch)).toBeInTheDocument();
+  expect(screen.getByDisplayValue(regexMatch)).toBeInTheDocument();
 })
