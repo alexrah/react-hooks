@@ -2,21 +2,18 @@
 // http://localhost:3000/isolated/exercise/04.js
 
 import * as React from 'react'
+import {useLocalStorageGeneric} from "../hooks/useLocalStorageGeneric";
 
 type Squares = string[]
 
 function Board() {
-  // 🐨 squares is the state for this component. Add useState for squares
-  // const squares = Array(9).fill(null)
 
-    const [squares,setSquares] = React.useState( Array(9).fill(null))
+    const [squares,setSquares] = useLocalStorageGeneric<string>('tic', Array(9).fill(null))
     const [winner,setWinner] = React.useState( '' )
     const [nextValue,setNextValue] = React.useState( () => Math.floor(Math.random()*100) % 2 ? 'O' : 'X' )
 
     const selectSquare = (square:number):void => {
-        console.log('selectSquare')
         if(winner){
-            console.log('selectSquare winner');
             return
         }
         const clonedSquares = [...squares];
@@ -28,13 +25,6 @@ function Board() {
     }
 
     React.useEffect(() => {
-        console.log('React.useEffect');
-        console.log(squares.every(Boolean));
-        if(!squares.every(s => s === null)){
-            console.log('React.useEffect calculateNextValue');
-            const next = calculateNextValue(squares)
-            setNextValue(next);
-        }
 
         const winner = calculateWinner(squares);
         if( winner ){
@@ -48,12 +38,24 @@ function Board() {
         setWinner('');
     }
 
-    function renderSquare(i:number) {
+    const renderSquare = (i:number) => {
     return (
       <button className="square" onClick={() => selectSquare(i)}>
         {squares[i]}
       </button>
     )
+    }
+
+    // eslint-disable-next-line no-unused-vars
+    const calculateNextValue = (squares:Squares) => {
+        // return squares.filter(Boolean).length % 2 === 0 ? 'X' : 'O'
+
+        setNextValue((prev) => {
+            return prev === 'X' ? 'O' : 'X';
+        })
+
+        return nextValue;
+
     }
 
   return (
@@ -101,10 +103,7 @@ function calculateStatus(winner:string, squares:Squares, nextValue:string) {
     : `Next player: ${nextValue}`
 }
 
-// eslint-disable-next-line no-unused-vars
-function calculateNextValue(squares:Squares) {
-  return squares.filter(Boolean).length % 2 === 0 ? 'X' : 'O'
-}
+
 
 // eslint-disable-next-line no-unused-vars
 function calculateWinner(squares:Squares) {
