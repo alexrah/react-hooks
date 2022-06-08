@@ -3,53 +3,63 @@
 
 import * as React from 'react'
 
+type Squares = string[]
+
 function Board() {
   // 🐨 squares is the state for this component. Add useState for squares
-  const squares = Array(9).fill(null)
+  // const squares = Array(9).fill(null)
 
-  // 🐨 We'll need the following bits of derived state:
-  // - nextValue ('X' or 'O')
-  // - winner ('X', 'O', or null)
-  // - status (`Winner: ${winner}`, `Scratch: Cat's game`, or `Next player: ${nextValue}`)
-  // 💰 I've written the calculations for you! So you can use my utilities
-  // below to create these variables
+    const [squares,setSquares] = React.useState( Array(9).fill(null))
+    const [winner,setWinner] = React.useState( '' )
+    const [nextValue,setNextValue] = React.useState( () => Math.floor(Math.random()*100) % 2 ? 'O' : 'X' )
 
-  // This is the function your square click handler will call. `square` should
-  // be an index. So if they click the center square, this will be `4`.
-  function selectSquare(square) {
-    // 🐨 first, if there's already winner or there's already a value at the
-    // given square index (like someone clicked a square that's already been
-    // clicked), then return early so we don't make any state changes
-    //
-    // 🦉 It's typically a bad idea to mutate or directly change state in React.
-    // Doing so can lead to subtle bugs that can easily slip into production.
-    //
-    // 🐨 make a copy of the squares array
-    // 💰 `[...squares]` will do it!)
-    //
-    // 🐨 set the value of the square that was selected
-    // 💰 `squaresCopy[square] = nextValue`
-    //
-    // 🐨 set the squares to your copy
-  }
+    const selectSquare = (square:number):void => {
+        console.log('selectSquare')
+        if(winner){
+            console.log('selectSquare winner');
+            return
+        }
+        const clonedSquares = [...squares];
+        if(!clonedSquares[square]){
+            clonedSquares[square] = calculateNextValue(clonedSquares);
+        }
+        setSquares(clonedSquares);
 
-  function restart() {
-    // 🐨 reset the squares
-    // 💰 `Array(9).fill(null)` will do it!
-  }
+    }
 
-  function renderSquare(i) {
+    React.useEffect(() => {
+        console.log('React.useEffect');
+        console.log(squares.every(Boolean));
+        if(!squares.every(s => s === null)){
+            console.log('React.useEffect calculateNextValue');
+            const next = calculateNextValue(squares)
+            setNextValue(next);
+        }
+
+        const winner = calculateWinner(squares);
+        if( winner ){
+            setWinner(winner);
+
+        }
+    },[squares])
+
+    const restart = () => {
+        setSquares( Array(9).fill(null) );
+        setWinner('');
+    }
+
+    function renderSquare(i:number) {
     return (
       <button className="square" onClick={() => selectSquare(i)}>
         {squares[i]}
       </button>
     )
-  }
+    }
 
   return (
     <div>
       {/* 🐨 put the status in the div below */}
-      <div className="status">STATUS</div>
+      <div className="status">{calculateStatus(winner,squares,nextValue)}</div>
       <div className="board-row">
         {renderSquare(0)}
         {renderSquare(1)}
@@ -83,7 +93,7 @@ function Game() {
 }
 
 // eslint-disable-next-line no-unused-vars
-function calculateStatus(winner, squares, nextValue) {
+function calculateStatus(winner:string, squares:Squares, nextValue:string) {
   return winner
     ? `Winner: ${winner}`
     : squares.every(Boolean)
@@ -92,12 +102,12 @@ function calculateStatus(winner, squares, nextValue) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function calculateNextValue(squares) {
+function calculateNextValue(squares:Squares) {
   return squares.filter(Boolean).length % 2 === 0 ? 'X' : 'O'
 }
 
 // eslint-disable-next-line no-unused-vars
-function calculateWinner(squares) {
+function calculateWinner(squares:Squares) {
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
