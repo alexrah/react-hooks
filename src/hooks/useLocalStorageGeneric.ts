@@ -25,7 +25,7 @@ function useLocalStorageGeneric<T>(
         )
 
         React.useEffect(()=>{
-            console.log('useLocalStorage useEffect',state);
+            // console.log('useLocalStorage useEffect',state);
 
             if(state.length > 0){
                 window.localStorage.setItem( keyName, serialize(state) );
