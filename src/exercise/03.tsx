@@ -3,7 +3,7 @@
 
 import * as React from 'react'
 
-function Name({name, onNameChange}) {
+function Name({name, onNameChange}:{name:string,onNameChange:(e:React.ChangeEvent<HTMLInputElement>)=>void}) {
   return (
     <div>
       <label htmlFor="name">Name: </label>
@@ -34,7 +34,7 @@ function FavoriteAnimal() {
 // }
 
 // 💣 remove this component in favor of the new one
-function Display({name}) {
+function Display({name}:{name?:string}) {
   return <div>{`Hey ${name}, you are great!`}</div>
 }
 
