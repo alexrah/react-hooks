@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 namespace locTypes {
-    export type initVal<T> = T[];
+    export type initVal<T> = T[] | ( () => T[] );
     export type serialize<U> = (val:initVal<U>) => string;
     export type unserialize<I> = (val:string) => initVal<I>;
 }
@@ -11,15 +11,16 @@ function useLocalStorageGeneric<T>(
     initialState: locTypes.initVal<T> = [],
     serialize: locTypes.serialize<T> = JSON.stringify,
     unserialize: locTypes.unserialize<T> = JSON.parse
-    ):[locTypes.initVal<T>, React.Dispatch<React.SetStateAction<locTypes.initVal<T>>>]
+    ):[T[], React.Dispatch<React.SetStateAction<T[]>>]
     {
-        const [state,setState] = React.useState(
+        // @ts-ignore
+        const [state,setState]:[T[],React.Dispatch<React.SetStateAction<T[]>>] = React.useState(
             () => {
                 const localStorageValue = localStorage.getItem(keyName);
                 if(localStorageValue){
                     return unserialize(localStorageValue);
                 }
-                return initialState;
+                return typeof initialState === 'function' ? initialState() : initialState;
             }
         )
 
