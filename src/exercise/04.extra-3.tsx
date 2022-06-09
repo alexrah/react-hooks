@@ -8,25 +8,32 @@ type Squares = string[]
 
 function Board() {
 
-    const [squares,setSquares] = useLocalStorageGeneric<string>('tic', Array(9).fill(null))
+    const [squares,setSquares] = useLocalStorageGeneric<string[]>('squares', Array(1).fill(Array(9).fill(null)))
     const [winner,setWinner] = React.useState( '' )
     const [nextValue,setNextValue] = React.useState( () => Math.floor(Math.random()*100) % 2 ? 'O' : 'X' )
+
+    console.log('squares xxx',squares);
+
+    const currentSquare = ():Squares => {
+        return squares[squares.length - 1];
+    }
 
     const selectSquare = (square:number):void => {
         if(winner){
             return
         }
         const clonedSquares = [...squares];
-        if(!clonedSquares[square]){
-            clonedSquares[square] = calculateNextValue(clonedSquares);
+        const lastMoves = currentSquare();
+        if(!lastMoves[square]){
+            lastMoves[square] = calculateNextValue(lastMoves);
         }
-        setSquares(clonedSquares);
+        setSquares([...clonedSquares,lastMoves]);
 
     }
 
     React.useEffect(() => {
 
-        const winner = calculateWinner(squares);
+        const winner = calculateWinner(currentSquare());
         if( winner ){
             setWinner(winner);
 
@@ -34,14 +41,14 @@ function Board() {
     },[squares])
 
     const restart = () => {
-        setSquares( Array(9).fill(null) );
+        setSquares( Array(1).fill(Array(9).fill(null)) );
         setWinner('');
     }
 
     const renderSquare = (i:number) => {
     return (
       <button className="square" onClick={() => selectSquare(i)}>
-        {squares[i]}
+        {currentSquare()[i]}
       </button>
     )
     }
@@ -58,10 +65,22 @@ function Board() {
 
     }
 
+    const changeHistory = (index:number) => {
+
+        if(index === 0){
+            return
+        }
+        const clonedSquares =  [...squares];
+        const slicedSquares = clonedSquares.slice(index+1);
+        setSquares(slicedSquares);
+        console.log('changeHistory',squares)
+
+    }
+
   return (
     <div>
       {/* 🐨 put the status in the div below */}
-      <div className="status">{calculateStatus(winner,squares,nextValue)}</div>
+      <div className="status">{calculateStatus(winner,currentSquare(),nextValue)}</div>
       <div className="board-row">
         {renderSquare(0)}
         {renderSquare(1)}
@@ -80,6 +99,11 @@ function Board() {
       <button className="restart" onClick={restart}>
         restart
       </button>
+        <div className="history-nav">
+            {squares.map((square, index) => (
+              <button data-index={index} key={'history-'+Math.floor(Math.random() * 10000)} onClick={() => changeHistory(index)} >Step: {index}</button>
+            ))}
+        </div>
     </div>
   )
 }
