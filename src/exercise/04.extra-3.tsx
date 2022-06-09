@@ -70,7 +70,7 @@ function Board() {
             return
         }
         const clonedSquares =  [...squares];
-        const slicedSquares = clonedSquares.slice(index+1);
+        const slicedSquares = clonedSquares.slice(0,index);
         console.log('changeHistory slicedSquares',slicedSquares);
         setSquares(slicedSquares);
 
@@ -99,9 +99,12 @@ function Board() {
         restart
       </button>
         <div className="history-nav">
-            {squares.map((square, index) => (
-              <button data-index={index} key={'history-'+Math.floor(Math.random() * 10000)} onClick={() => changeHistory(index)} >Step: {index}</button>
-            ))}
+            {squares.map((square, index) => {
+                if (index > 0) {
+                    return <button data-index={index} key={'history-' + Math.floor(Math.random() * 10000)}
+                            onClick={() => changeHistory(index)}>Step: {index}</button>
+                }
+            })}
         </div>
     </div>
   )
