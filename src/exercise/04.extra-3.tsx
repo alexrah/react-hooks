@@ -5,13 +5,13 @@ import * as React from 'react'
 import {useLocalStorageGeneric} from "../hooks/useLocalStorageGeneric";
 import "../lib/logger"
 
-type Squares = string[]
+type Squares = readonly string[]
 
 function Board() {
 
     const [squares,setSquares] = useLocalStorageGeneric<Squares>('squares', Array(1).fill(Array(9).fill(null)))
     const [winner,setWinner] = React.useState( '' )
-    const [nextValue,setNextValue] = React.useState<string[]>( () => Array(1).fill( Math.floor(Math.random()*100) % 2 ? 'O' : 'X' ))
+    const [nextValue,setNextValue] = React.useState<readonly string[]>( () => Array(1).fill( Math.floor(Math.random()*100) % 2 ? 'O' : 'X' ))
 
 
     const currentSquare = ():Squares => {
@@ -25,7 +25,7 @@ function Board() {
 
         const lastMoves = [...currentSquare()];
         if(!lastMoves[square]){
-            lastMoves[square] = calculateNextValue(lastMoves);
+            lastMoves[square] = calculateNextValue();
         }
         setSquares([...squares,lastMoves]);
 
@@ -54,7 +54,7 @@ function Board() {
     }
 
     // eslint-disable-next-line no-unused-vars
-    const calculateNextValue = (squares:Squares) => {
+    const calculateNextValue = () => {
 
         setNextValue((prevValues) => {
             const next = prevValues[prevValues.length - 1] === 'X' ? 'O' : 'X'
