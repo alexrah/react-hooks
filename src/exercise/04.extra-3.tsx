@@ -11,7 +11,7 @@ function Board() {
 
     const [squares,setSquares] = useLocalStorageGeneric<Squares>('squares', Array(1).fill(Array(9).fill(null)))
     const [winner,setWinner] = React.useState( '' )
-    const [nextValue,setNextValue] = React.useState( () => Math.floor(Math.random()*100) % 2 ? 'O' : 'X' )
+    const [nextValue,setNextValue] = React.useState<string[]>( () => Array(1).fill( Math.floor(Math.random()*100) % 2 ? 'O' : 'X' ))
 
 
     const currentSquare = ():Squares => {
@@ -56,11 +56,12 @@ function Board() {
     // eslint-disable-next-line no-unused-vars
     const calculateNextValue = (squares:Squares) => {
 
-        setNextValue((prev) => {
-            return prev === 'X' ? 'O' : 'X';
+        setNextValue((prevValues) => {
+            const next = prevValues[prevValues.length - 1] === 'X' ? 'O' : 'X'
+            return [...prevValues,next];
         })
 
-        return nextValue;
+        return nextValue[nextValue.length -1];
 
     }
 
@@ -74,12 +75,17 @@ function Board() {
         console.log('changeHistory slicedSquares',slicedSquares);
         setSquares(slicedSquares);
 
+        const clonedNextValue = [...nextValue];
+        const slicedNextValue = clonedNextValue.slice(0,index)
+        setNextValue(slicedNextValue);
+
+
     }
 
   return (
     <div>
       {/* 🐨 put the status in the div below */}
-      <div className="status">{calculateStatus(winner,currentSquare(),nextValue)}</div>
+      <div className="status">{calculateStatus(winner,currentSquare(),nextValue[nextValue.length -1])}</div>
       <div className="board-row">
         {renderSquare(0)}
         {renderSquare(1)}
