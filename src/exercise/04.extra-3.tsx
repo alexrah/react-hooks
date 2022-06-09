@@ -3,16 +3,16 @@
 
 import * as React from 'react'
 import {useLocalStorageGeneric} from "../hooks/useLocalStorageGeneric";
+import "../lib/logger"
 
 type Squares = string[]
 
 function Board() {
 
-    const [squares,setSquares] = useLocalStorageGeneric<string[]>('squares', Array(1).fill(Array(9).fill(null)))
+    const [squares,setSquares] = useLocalStorageGeneric<Squares>('squares', Array(1).fill(Array(9).fill(null)))
     const [winner,setWinner] = React.useState( '' )
     const [nextValue,setNextValue] = React.useState( () => Math.floor(Math.random()*100) % 2 ? 'O' : 'X' )
 
-    console.log('squares xxx',squares);
 
     const currentSquare = ():Squares => {
         return squares[squares.length - 1];
@@ -22,12 +22,12 @@ function Board() {
         if(winner){
             return
         }
-        const clonedSquares = [...squares];
-        const lastMoves = currentSquare();
+
+        const lastMoves = [...currentSquare()];
         if(!lastMoves[square]){
             lastMoves[square] = calculateNextValue(lastMoves);
         }
-        setSquares([...clonedSquares,lastMoves]);
+        setSquares([...squares,lastMoves]);
 
     }
 
@@ -46,16 +46,15 @@ function Board() {
     }
 
     const renderSquare = (i:number) => {
-    return (
-      <button className="square" onClick={() => selectSquare(i)}>
-        {currentSquare()[i]}
-      </button>
-    )
+        return (
+          <button className="square" onClick={() => selectSquare(i)}>
+            {currentSquare()[i]}
+          </button>
+        )
     }
 
     // eslint-disable-next-line no-unused-vars
     const calculateNextValue = (squares:Squares) => {
-        // return squares.filter(Boolean).length % 2 === 0 ? 'X' : 'O'
 
         setNextValue((prev) => {
             return prev === 'X' ? 'O' : 'X';
@@ -72,8 +71,8 @@ function Board() {
         }
         const clonedSquares =  [...squares];
         const slicedSquares = clonedSquares.slice(index+1);
+        console.log('changeHistory slicedSquares',slicedSquares);
         setSquares(slicedSquares);
-        console.log('changeHistory',squares)
 
     }
 
