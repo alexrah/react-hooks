@@ -3,7 +3,7 @@
 
 import * as React from 'react'
 // eslint-disable-next-line no-unused-vars
-import VanillaTilt from 'vanilla-tilt'
+import VanillaTilt, {HTMLVanillaTiltElement} from 'vanilla-tilt'
 
 function Tilt({children}:{children:JSX.Element}) {
   // 🐨 create a ref here with React.useRef()
@@ -14,13 +14,16 @@ function Tilt({children}:{children:JSX.Element}) {
         if(tiltRef.current === null){
             return
         }
-        VanillaTilt.init(tiltRef.current,{
+        VanillaTilt.init((tiltRef.current),{
             speed: 400,
             max: 25,
             glare: true,
             'max-glare': 0.5
-        })
-    })
+        });
+        return () => {
+            ((tiltRef.current as unknown) ! as HTMLVanillaTiltElement).vanillaTilt.destroy();
+        }
+    },[])
 
   // 🐨 add a `React.useEffect` callback here and use VanillaTilt to make your
   // div look fancy.
