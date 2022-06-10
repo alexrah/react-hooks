@@ -8,6 +8,20 @@ import VanillaTilt from 'vanilla-tilt'
 function Tilt({children}:{children:JSX.Element}) {
   // 🐨 create a ref here with React.useRef()
 
+    const tiltRef = React.useRef<HTMLDivElement>(null);
+
+    React.useEffect(()=>{
+        if(tiltRef.current === null){
+            return
+        }
+        VanillaTilt.init(tiltRef.current,{
+            speed: 400,
+            max: 25,
+            glare: true,
+            'max-glare': 0.5
+        })
+    })
+
   // 🐨 add a `React.useEffect` callback here and use VanillaTilt to make your
   // div look fancy.
   // 💰 like this:
@@ -29,7 +43,7 @@ function Tilt({children}:{children:JSX.Element}) {
 
   // 🐨 add the `ref` prop to the `tilt-root` div here:
   return (
-    <div className="tilt-root">
+    <div ref={tiltRef} className="tilt-root">
       <div className="tilt-child">{children}</div>
     </div>
   )
