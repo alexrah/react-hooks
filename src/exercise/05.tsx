@@ -4,6 +4,7 @@
 import * as React from 'react'
 // eslint-disable-next-line no-unused-vars
 import VanillaTilt, {HTMLVanillaTiltElement} from 'vanilla-tilt'
+// import '../lib/logger';
 
 function Tilt({children}:{children:JSX.Element}) {
   // 🐨 create a ref here with React.useRef()
@@ -11,20 +12,26 @@ function Tilt({children}:{children:JSX.Element}) {
     const tiltRef = React.useRef<HTMLDivElement>(null);
 
     React.useEffect(()=>{
+        console.log('React.useEffect mount');
         if(tiltRef.current === null){
             return
         }
-        VanillaTilt.init((tiltRef.current),{
+
+        // const {current: tiltNode} = tiltRef
+        const tiltNode = tiltRef.current
+
+        VanillaTilt.init((tiltNode),{
             speed: 400,
             max: 25,
             glare: true,
             'max-glare': 0.5
         });
         return () => {
-            if(tiltRef.current === null){
+            console.log('React.useEffect unmount');
+            if(tiltNode === null){
                 return
             }
-            ((tiltRef.current as unknown) ! as HTMLVanillaTiltElement).vanillaTilt.destroy();
+            ((tiltNode as unknown) ! as HTMLVanillaTiltElement).vanillaTilt.destroy();
         }
     },[])
 
