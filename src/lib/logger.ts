@@ -5,6 +5,8 @@
  * you may clone it like this:
  * 
  * @see https://stackoverflow.com/questions/17320181/console-log-showing-only-the-updated-version-of-the-object-printed
+ * usage as side effect:
+ * import "../lib/logger"
 * */
 
 const _originalLog = console.log;
