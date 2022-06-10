@@ -8,7 +8,7 @@ import * as React from 'react'
 // PokemonDataView: the stuff we use to display the pokemon info
 import {PokemonForm} from '../pokemon'
 
-function PokemonInfo({pokemonName}) {
+function PokemonInfo({pokemonName}:{pokemonName:string}) {
   // 🐨 Have state for the pokemon (null)
   // 🐨 use React.useEffect where the callback should be called whenever the
   // pokemon name changes.
@@ -26,13 +26,15 @@ function PokemonInfo({pokemonName}) {
   //   3. pokemon: <PokemonDataView pokemon={pokemon} />
 
   // 💣 remove this
-  return 'TODO'
+  return (
+      <></>
+  )
 }
 
 function App() {
   const [pokemonName, setPokemonName] = React.useState('')
 
-  function handleSubmit(newPokemonName) {
+  function handleSubmit(newPokemonName:string) {
     setPokemonName(newPokemonName)
   }
 
