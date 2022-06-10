@@ -21,6 +21,9 @@ function Tilt({children}:{children:JSX.Element}) {
             'max-glare': 0.5
         });
         return () => {
+            if(tiltRef.current === null){
+                return
+            }
             ((tiltRef.current as unknown) ! as HTMLVanillaTiltElement).vanillaTilt.destroy();
         }
     },[])
