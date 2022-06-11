@@ -77,7 +77,7 @@ function PokemonInfo({pokemonName}:{pokemonName:string}) {
   // 💣 remove this
 
     if (!pokemonName) {
-        return "Please select a Pokemon"
+        return <p>"Please select a Pokemon"</p>
     } else if( pokemonData ){
         return <PokemonDataView pokemon={pokemonData}/>
     } else {
