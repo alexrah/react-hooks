@@ -3,7 +3,7 @@ import {alfredTip} from '@kentcdodds/react-workshop-app/test-utils'
 import {render, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 // import App from '../final/06'
-import App from '../exercise/06'
+import App from '../exercise/06.extra-1'
 
 beforeEach(() => jest.spyOn(window, 'fetch'))
 afterEach(() => window.fetch.mockRestore())
@@ -36,4 +36,12 @@ test('displays the pokemon', async () => {
     () => expect(window.fetch).not.toHaveBeenCalled(),
     'Make certain that you are providing a dependencies list in useEffect.',
   )
+
+  // verify that an error msg is shown in case of failed results
+  await userEvent.clear(input)
+  await userEvent.type(input, 'pikachuxxx');
+  await userEvent.click(submit)
+  const errMsg = await screen.findByText(/There was an error:/i);
+  expect(errMsg).toBeInTheDocument();
+
 })
