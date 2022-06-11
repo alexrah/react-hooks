@@ -8,6 +8,23 @@ import * as React from 'react'
 // PokemonDataView: the stuff we use to display the pokemon info
 import {PokemonForm,fetchPokemon,PokemonDataView,PokemonInfoFallback} from '../pokemon'
 
+type tPokemonDataSpecial = {
+    name: string,
+    type: string,
+    damage: string
+}[]
+
+type tPokemonData = {
+    name: string,
+    number: number|'XXX',
+    image: string,
+    attacks: {
+        special: tPokemonDataSpecial[],
+    },
+    fetchedAt: string,
+    errMsg: string
+}
+
 function PokemonInfo({pokemonName}:{pokemonName:string}) {
   // 🐨 Have state for the pokemon (null)
   // 🐨 use React.useEffect where the callback should be called whenever the
@@ -27,8 +44,8 @@ function PokemonInfo({pokemonName}:{pokemonName:string}) {
 
 
 
-    const [pokemonData,setPokemonData] = React.useState({});
-    const [pokemonErr,setPokemonErr] = React.useState('');
+    const [pokemonData,setPokemonData] = React.useState<tPokemonData | null>(null);
+    const [pokemonErr,setPokemonErr] = React.useState<string>('');
 
     console.log('PokemonInfo',pokemonData);
 
@@ -38,13 +55,15 @@ function PokemonInfo({pokemonName}:{pokemonName:string}) {
 
         if(pokemonName){
             console.log('PokemonInfo useEffect setPokemonData');
+            setPokemonData(null);
+            setPokemonErr('');
             fetchPokemon(pokemonName)
                 .then(data => {
                 setPokemonData(data);
                 })
                 .catch(err => {
                     console.log('fetch err',err);
-                    setPokemonData({});
+                    setPokemonData(null);
                     setPokemonErr(err.message);
 
                 })
@@ -56,7 +75,10 @@ function PokemonInfo({pokemonName}:{pokemonName:string}) {
     },[pokemonName])
 
   // 💣 remove this
-    if( Object.keys(pokemonData).length >0 ){
+
+    if (!pokemonName) {
+        return "Please select a Pokemon"
+    } else if( pokemonData ){
         return <PokemonDataView pokemon={pokemonData}/>
     } else {
         return <PokemonInfoFallback errMsg={pokemonErr} name={pokemonName} />
