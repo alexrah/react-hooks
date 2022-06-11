@@ -60,7 +60,7 @@ function fetchPokemon(name, delay = 1500) {
     })
 }
 
-function PokemonInfoFallback({name}) {
+function PokemonInfoFallback({name,errMsg = ''}) {
   const initialName = React.useRef(name).current
   const fallbackPokemonData = {
     name: initialName,
@@ -72,9 +72,23 @@ function PokemonInfoFallback({name}) {
         {name: 'Loading Attack 2', type: 'Type', damage: 'XX'},
       ],
     },
-    fetchedAt: 'loading...',
+    fetchedAt: errMsg ? formatDate(new Date()) : 'loading...'
   }
-  return <PokemonDataView pokemon={fallbackPokemonData} />
+
+  const errElement = (errMsg) ?
+      <div className="error-msg" role='alert'>
+          There was an error: <pre style={{whiteSpace: 'normal'}}>{errMsg}</pre>
+      </div>
+      :null
+
+  return (
+      <>
+        {errElement}
+        <PokemonDataView pokemon={fallbackPokemonData} />
+      </>
+      )
+
+
 }
 
 function PokemonDataView({pokemon}) {
