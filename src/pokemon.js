@@ -26,6 +26,9 @@ function fetchPokemon(name, delay = 1500) {
     }
   `
 
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), 3000);
+
   return window
     .fetch('https://graphql-pokemon2.vercel.app/', {
       // learn more about this API here: https://wayfair.github.io/dociql/
@@ -39,9 +42,12 @@ function fetchPokemon(name, delay = 1500) {
         query: pokemonQuery,
         variables: {name: name.toLowerCase()},
       }),
+      signal: controller.signal
     })
     .then(async response => {
-      const {data} = await response.json()
+
+        clearTimeout(id);
+        const {data} = await response.json()
       if (response.ok) {
         const pokemon = data?.pokemon
         if (pokemon) {
