@@ -34,7 +34,7 @@ type tState = {
     pokemonData: tPokemonData | null
 }
 
-function PokemonInfo({pokemonName,state,setState}:{pokemonName:string,state:tState,setState: React.Dispatch<React.SetStateAction<tState>>}) {
+function PokemonInfo({state,setState}:{state:tState,setState: React.Dispatch<React.SetStateAction<tState>>}) {
   // 🐨 Have state for the pokemon (null)
   // 🐨 use React.useEffect where the callback should be called whenever the
   // pokemon name changes.
@@ -62,7 +62,7 @@ function PokemonInfo({pokemonName,state,setState}:{pokemonName:string,state:tSta
 
         console.log('PokemonInfo useEffect');
 
-        if(pokemonName){
+        if(state.pokemonName){
             console.log('PokemonInfo useEffect setPokemonData');
             // setPokemonData(null);
             // setPokemonErr('');
@@ -75,7 +75,7 @@ function PokemonInfo({pokemonName,state,setState}:{pokemonName:string,state:tSta
                 }
             })
 
-            fetchPokemon(pokemonName)
+            fetchPokemon(state.pokemonName)
                 .then(data => {
                     // setPokemonData(data);
                     // setStatus('resolved');
@@ -107,7 +107,7 @@ function PokemonInfo({pokemonName,state,setState}:{pokemonName:string,state:tSta
 
 
 
-    },[pokemonName])
+    },[state.pokemonName])
 
   // 💣 remove this
 
@@ -128,7 +128,7 @@ function PokemonInfo({pokemonName,state,setState}:{pokemonName:string,state:tSta
             return <PokemonDataView pokemon={state.pokemonData}/>
         case "pending":
         case "rejected":
-            return <PokemonInfoFallback errMsg={state.pokemonErr} name={pokemonName} />
+            return <PokemonInfoFallback errMsg={state.pokemonErr} name={state.pokemonName} />
         }
 }
 
@@ -162,7 +162,7 @@ function App() {
       <PokemonForm pokemonName={state.pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <PokemonInfo pokemonName={state.pokemonName} state={state} setState={setState} />
+        <PokemonInfo state={state} setState={setState} />
       </div>
     </div>
   )
