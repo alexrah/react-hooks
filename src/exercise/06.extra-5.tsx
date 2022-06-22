@@ -139,12 +139,16 @@ class ErrorBoundaryPokemon extends React.Component<any, any>{
 
     constructor(props:any){
         super(props);
-        this.state = { hasError: false };
+        this.state = {
+            hasError: false,
+            errorData: ''
+        };
+        console.log('%cErrorBoundaryPokemon constructor','color: yellow');
     }
 
     static getDerivedStateFromError(error:any) {
         // Update state so the next render will show the fallback UI.
-        return { hasError: true, errorData: error };
+        return { hasError: true, errorData: error.message };
     }
 
     render() {
@@ -152,7 +156,8 @@ class ErrorBoundaryPokemon extends React.Component<any, any>{
         this.fallbackComponent = this.props.fallBackComp
         this.restProps = {...this.props};
         delete this.restProps.fallBackComp;
-        this.restProps.errMsg = this.restProps.errMsg.length > 0 ? this.restProps.errMsg : 'Unknown error';
+        this.restProps.errMsg = this.restProps.errMsg.length > 0 ? this.restProps.errMsg : 'Unknown fetch error ';
+        this.restProps.errMsg +=  this.state.errorData;
 
 
         if (this.state.hasError) {
@@ -202,7 +207,7 @@ function App() {
           <PokemonForm pokemonName={state.pokemonName} onSubmit={handleSubmit} />
           <hr />
           <div className="pokemon-info">
-              <ErrorBoundaryPokemon name={state.pokemonName} errMsg={state.pokemonErr} fallBackComp={PokemonInfoFallback}>
+              <ErrorBoundaryPokemon key={state.pokemonName} name={state.pokemonName} errMsg={state.pokemonErr} fallBackComp={PokemonInfoFallback}>
                 <PokemonInfo state={state} setState={setState} />
               </ErrorBoundaryPokemon>
           </div>
