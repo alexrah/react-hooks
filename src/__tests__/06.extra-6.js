@@ -3,8 +3,7 @@ import {alfredTip} from '@kentcdodds/react-workshop-app/test-utils'
 import {render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 // import App from '../final/06'
-import App from '../exercise/06.extra-5'
-import async from "async";
+import App from '../exercise/06.extra-6'
 
 // jest.useFakeTimers();
 // jest.spyOn(global, 'setTimeout');
