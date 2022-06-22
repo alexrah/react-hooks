@@ -128,7 +128,6 @@ function PokemonInfo({state,setState}:{state:tState,setState: React.Dispatch<Rea
             return <PokemonDataView pokemon={null}/>
         case "pending":
         case "rejected":
-            console.log('%crejected state.pokemonName','color: yellow',state.pokemonName);
             return <PokemonInfoFallback errMsg={state.pokemonErr} name={state.pokemonName} />
         }
 }
@@ -140,9 +139,6 @@ class ErrorBoundaryPokemon extends React.Component<any, any>{
     constructor(props:any){
         super(props);
         this.state = { hasError: false };
-
-        console.log('%cthis.restProps','color: yellow',this.restProps);
-
     }
 
     static getDerivedStateFromError(error:any) {
