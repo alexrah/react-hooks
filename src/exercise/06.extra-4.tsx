@@ -125,18 +125,24 @@ function PokemonInfo({state,setState}:{state:tState,setState: React.Dispatch<Rea
             return <p>"Please select a Pokemon"</p>
         case "resolved":
         case "successful":
-            return <PokemonDataView pokemon={state.pokemonData}/>
+            return <PokemonDataView pokemon={null}/>
         case "pending":
         case "rejected":
+            console.log('%crejected state.pokemonName','color: yellow',state.pokemonName);
             return <PokemonInfoFallback errMsg={state.pokemonErr} name={state.pokemonName} />
         }
 }
 
 class ErrorBoundaryPokemon extends React.Component<any, any>{
+    private fallbackComponent: any;
+    private restProps: any;
 
     constructor(props:any){
         super(props);
-        this.state = { hasError: false, pokemonName: props.pokemonName };
+        this.state = { hasError: false };
+
+        console.log('%cthis.restProps','color: yellow',this.restProps);
+
     }
 
     static getDerivedStateFromError(error:any) {
@@ -145,9 +151,19 @@ class ErrorBoundaryPokemon extends React.Component<any, any>{
     }
 
     render() {
+
+        this.fallbackComponent = this.props.fallBackComp
+        this.restProps = {...this.props};
+        delete this.restProps.fallBackComp;
+        this.restProps.errMsg = this.restProps.errMsg.length > 0 ? this.restProps.errMsg : 'Unknown error';
+
         if (this.state.hasError) {
             // You can render any custom fallback UI
-            return <PokemonInfoFallback errMsg={this.state.errorData.message} name={this.state.pokemonName} />;
+            return (
+                <div className='errorBoundary'>
+                    <this.fallbackComponent {...this.restProps} />
+                </div>
+            )
         }
 
         return this.props.children;
@@ -179,6 +195,8 @@ function App() {
     })
   }
 
+  console.log('%cApp state','color: yellow',state);
+
   return (
 
         <div className="pokemon-info-app">
@@ -186,7 +204,7 @@ function App() {
           <PokemonForm pokemonName={state.pokemonName} onSubmit={handleSubmit} />
           <hr />
           <div className="pokemon-info">
-              <ErrorBoundaryPokemon pokemonName={state.pokemonName}>
+              <ErrorBoundaryPokemon name={state.pokemonName} errMsg={state.pokemonErr} fallBackComp={PokemonInfoFallback}>
                 <PokemonInfo state={state} setState={setState} />
               </ErrorBoundaryPokemon>
           </div>
