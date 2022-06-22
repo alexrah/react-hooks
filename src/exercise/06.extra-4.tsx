@@ -138,22 +138,29 @@ class ErrorBoundaryPokemon extends React.Component<any, any>{
 
     constructor(props:any){
         super(props);
-        this.state = { hasError: false };
+        this.state = {
+            hasError: false,
+            errorData: ''
+        };
     }
 
     static getDerivedStateFromError(error:any) {
         // Update state so the next render will show the fallback UI.
-        return { hasError: true, errorData: error };
+        console.log('%cgetDerivedStateFromError error','color: yellow');
+        console.dir(error);
+        return { hasError: true, errorData: error.message };
     }
 
     render() {
 
-        this.fallbackComponent = this.props.fallBackComp
-        this.restProps = {...this.props};
-        delete this.restProps.fallBackComp;
-        this.restProps.errMsg = this.restProps.errMsg.length > 0 ? this.restProps.errMsg : 'Unknown error';
-
         if (this.state.hasError) {
+
+            this.fallbackComponent = this.props.fallBackComp
+            this.restProps = {...this.props};
+            delete this.restProps.fallBackComp;
+            this.restProps.errMsg = this.restProps.errMsg.length > 0 ? this.restProps.errMsg : 'Unknown fetch error ';
+            this.restProps.errMsg +=  this.state.errorData;
+
             // You can render any custom fallback UI
             return (
                 <div className='errorBoundary'>
