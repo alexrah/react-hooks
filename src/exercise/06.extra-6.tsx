@@ -131,8 +131,10 @@ function PokemonInfo({state,setState}:{state:tState,setState: React.Dispatch<Rea
         case "pending":
             return <PokemonInfoFallback errMsg={state.pokemonErr} name={state.pokemonName} />
         case "rejected":
-            return new Error('rejected error');
-        }
+            // return new Error('rejected error');
+            return <p>rejected error</p>
+
+    }
 }
 
 class ErrorBoundaryPokemon extends React.Component<any, any>{
